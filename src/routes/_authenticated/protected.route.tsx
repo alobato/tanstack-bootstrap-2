@@ -1,8 +1,6 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 import * as m from '@/paraglide/messages'
 import { getLocale, setLocale, locales } from '@/paraglide/runtime'
-
-
 import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,49 +10,68 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useTheme } from "@/context/theme-context";
-import { useEffect } from 'react';
+import { getServerLocale, setServerLocale } from '@/lib/locale'
+
+type LocaleType = "en" | "de" | "pt"
 
 export const Route = createFileRoute('/_authenticated/protected')({
-  // beforeLoad: async ({ location }) => {
-    // console.log("beforeLoad location", location);
-    // Chama a API que retorna o usuário autenticado (usa cookie)
-    // try {
-    //   const res = await fetch('http://localhost:3000/api/me', { credentials: 'include' })
-    //   const data = await res.json() as { user: { id: number; email: string } | null }
-    //   console.log("----data", data);
-    //   if (!data.user) {
-    //     throw redirect({ to: '/sign-in', search: { redirect: location.pathname } })
-    //   }
-    // } catch (error) {
-    //   console.error("Error in beforeLoad", error);
-    //   // throw redirect({ to: '/sign-in', search: { redirect: location.pathname } })
-    // }
-
-  // },
+  beforeLoad: async ({ context }) => {
+    try {
+      const serverLocale = await getServerLocale()
+      if (serverLocale && locales.includes(serverLocale as LocaleType)) {
+        setLocale(serverLocale as LocaleType)
+      } else {
+        setLocale("en")
+      }
+    } catch (error) {
+      console.error('Error fetching language:', error)
+      setLocale("en")
+    }
+  },
   component: RouteComponent,
 })
 
 function RouteComponent() {
-
   const { setTheme } = useTheme()
 
-  useEffect(() => {
-    const lang = navigator.languages?.[0] || navigator.language;
-    const baseLang = lang.split("-")[0] as "en" | "de" | "pt";
-
-    if (locales.includes(lang as "en" | "de" | "pt")) {
-      setLocale(lang as "en" | "de" | "pt");
-    } else if (locales.includes(baseLang)) {
-      setLocale(baseLang);
-    } else {
-      setLocale("en");
+  const handleLocaleChange = async (newLocale: LocaleType) => {
+    try {
+      const result = await setServerLocale({ data: { locale: newLocale } })
+      if (result.success) {
+        setLocale(newLocale)
+      } else {
+        console.error('Failed to set locale')
+      }
+    } catch (error) {
+      console.error('Error changing language:', error)
     }
-  }, []);
+  }
 
   return (
     <div>
-      <h1 onClick={() => setLocale('pt')}>{getLocale()}</h1>
-      <div>
+      <div className="flex items-center gap-4 mb-4">
+        <h1>Idioma atual: {getLocale()}</h1>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">
+              Mudar Idioma
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => handleLocaleChange('en')}>
+              English
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleLocaleChange('pt')}>
+              Português
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleLocaleChange('de')}>
+              Deutsch
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      <div className="mb-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon">

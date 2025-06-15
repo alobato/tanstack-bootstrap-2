@@ -8,6 +8,7 @@
 import { Hono, Context, Next } from 'hono'
 import { cors } from 'hono/cors';
 import { jwtVerify, SignJWT } from "jose";
+import { setLocale, locales, getLocale } from '@/paraglide/runtime'
 
 import {
   createStartAPIHandler,
@@ -55,6 +56,29 @@ export async function authenticateCookie(c: Context, next: Next) {
   }
 }
 
+// Middleware para detectar o idioma
+async function detectLanguage(c: Context, next: Next) {
+  const acceptLanguage = c.req.header('Accept-Language');
+
+  if (acceptLanguage) {
+    // Pega o primeiro idioma da lista (ex: "pt-BR,pt;q=0.9,en;q=0.8")
+    const preferredLang = acceptLanguage.split(',')[0].split('-')[0];
+
+    // Verifica se o idioma está disponível
+    if (locales.includes(preferredLang as "en" | "de" | "pt")) {
+      setLocale(preferredLang as "en" | "de" | "pt");
+    } else {
+      // Fallback para inglês se o idioma não estiver disponível
+      setLocale("en");
+    }
+  } else {
+    // Fallback para inglês se não houver header
+    setLocale("en");
+  }
+
+  await next();
+}
+
 const typeDefs = /* GraphQL */ `
   type Query {
     hello: String!
@@ -91,6 +115,9 @@ const yoga = createYoga({
 
 // Criar instância do Hono
 const app = new Hono()
+
+// Adicionar middleware de detecção de idioma antes do CORS
+app.use('*', detectLanguage)
 
 app.use(
   '*',
@@ -289,6 +316,11 @@ app.get('/api/secret', authenticateCookie, (c) => {
   const user = c.get<any>('user')
   return c.json({ message: 'Você acessou uma rota protegida!', user })
 })
+
+// Adicionar endpoint para retornar o idioma atual
+app.get('/api/locale', (c) => {
+  return c.json({ locale: getLocale() });
+});
 
 // app.route('/auth', authRouter);
 
