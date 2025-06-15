@@ -2,7 +2,7 @@
 import { defineConfig } from "@tanstack/react-start/config";
 import tsConfigPaths from "vite-tsconfig-paths";
 import { cloudflare } from "unenv";
-// import { paraglide } from "@inlang/paraglide-vite";
+import { paraglide } from "@inlang/paraglide-vite";
 
 import nitroCloudflareBindings from "nitro-cloudflare-dev";
 
@@ -21,10 +21,10 @@ export default defineConfig({
       tsConfigPaths({
         projects: ["./tsconfig.json"],
       }),
-      // paraglide({
-      //   project: "./project.inlang",
-      //   outdir: "./src/paraglide",
-      // }),
+      paraglide({
+        project: "./project.inlang",
+        outdir: "./src/paraglide",
+      }),
     ],
   },
 });

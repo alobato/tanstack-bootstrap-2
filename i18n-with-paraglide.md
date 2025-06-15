@@ -8,6 +8,28 @@ Primeiro, instale as dependências necessárias:
 pnpm add -D @inlang/paraglide-js @inlang/paraglide-vite
 ```
 
+### 1.1. Inicialização via CLI
+
+Alternativamente, você pode usar o CLI do Paraglide para inicializar o projeto automaticamente:
+
+```bash
+npx @inlang/paraglide-js@latest init
+```
+
+O CLI irá:
+- Criar um novo projeto inlang
+- Perguntar onde os arquivos compilados devem ser colocados (padrão: `./src/paraglide`)
+- Adicionar `@inlang/paraglide-js` às devDependencies no `package.json`
+- Adicionar o comando de compilação ao script de build no `package.json`
+- Adicionar a extensão Sherlock VSCode às recomendações do workspace
+- Oferecer a opção de configurar traduções automáticas
+- Executar o compilador paraglide
+
+Após a inicialização, você deve:
+1. Executar seu comando de instalação (npm i, yarn install, etc)
+2. Executar o script de build (npm run build, ou similar)
+3. Visitar a documentação em https://inlang.com/m/gerre34r/library-inlang-paraglideJs/basics para começar
+
 ## 2. Configuração do Projeto
 
 ### 2.1. Criar arquivo de configuração do Paraglide

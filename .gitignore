@@ -21,8 +21,5 @@ yarn.lock
 /blob-report/
 /playwright/.cache/
 
-/src/paraglide
-/project.inlang
-
 wrangler.toml
 .wrangler

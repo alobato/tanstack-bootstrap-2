@@ -1,4 +1,7 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
+import * as m from '@/paraglide/messages'
+import { getLocale, setLocale, locales } from '@/paraglide/runtime'
+
 
 import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useTheme } from "@/context/theme-context";
+import { useEffect } from 'react';
 
 export const Route = createFileRoute('/_authenticated/protected')({
   // beforeLoad: async ({ location }) => {
@@ -34,8 +38,22 @@ function RouteComponent() {
 
   const { setTheme } = useTheme()
 
+  useEffect(() => {
+    const lang = navigator.languages?.[0] || navigator.language;
+    const baseLang = lang.split("-")[0] as "en" | "de" | "pt";
+
+    if (locales.includes(lang as "en" | "de" | "pt")) {
+      setLocale(lang as "en" | "de" | "pt");
+    } else if (locales.includes(baseLang)) {
+      setLocale(baseLang);
+    } else {
+      setLocale("en");
+    }
+  }, []);
+
   return (
     <div>
+      <h1 onClick={() => setLocale('pt')}>{getLocale()}</h1>
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -56,7 +74,8 @@ function RouteComponent() {
         </DropdownMenu>
       </div>
 
-      <h1>Protected Route</h1>
+      <h1>{m.example_message({ username: 'John Doe' })}</h1>
+      <h1>{m.example_message({ username: 'John Doe' }, { locale: 'de' })}</h1>
       <Outlet />
     </div>
   )

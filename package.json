@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vinxi dev",
-    "build": "vinxi build",
+    "build": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide && vinxi build",
     "start": "vinxi start"
   },
   "dependencies": {
@@ -55,7 +55,7 @@
     "zod": "^3.24.4"
   },
   "devDependencies": {
-    "@inlang/paraglide-js": "2.0.12",
+    "@inlang/paraglide-js": "2.1.0",
     "@inlang/paraglide-vite": "^1.4.0",
     "@types/node": "^22.5.4",
     "@types/react": "^19.1.2",
