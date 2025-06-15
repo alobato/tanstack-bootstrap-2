@@ -1,0 +1,25 @@
+"$schema" = "node_modules/wrangler/config-schema.json"
+name = "tanstack-bootstrap"
+main = "./.output/server/index.mjs"
+workers_dev = true
+compatibility_date = "2025-04-14"
+compatibility_flags = [ "nodejs_compat" ]
+
+[observability]
+# Optional: Enable observability features if needed
+enabled  =  true
+
+[[ d1_databases ]]
+binding = "DB"
+database_name = "tanstack-bootstrap-db"
+database_id = ""
+migrations_dir = "drizzle/migrations"
+
+[assets]
+directory = "./.output/public/"
+
+[vars]
+ENVIRONMENT = "development"
+
+[env.production.vars]
+ENVIRONMENT = "production"

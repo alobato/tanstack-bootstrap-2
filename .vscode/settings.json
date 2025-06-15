@@ -1,0 +1,17 @@
+{
+  "files.watcherExclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "search.exclude": {
+    "**/routeTree.gen.ts": true,
+    "pnpm-lock.yaml": true,
+    "node_modules": true,
+    "worker-configuration.d.ts": true
+  },
+  "files.readonlyInclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "files.exclude": {
+    "node_modules": true
+  }
+}
