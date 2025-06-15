@@ -16,6 +16,11 @@ import { seo } from '~/utils/seo'
 import { AuthProvider } from '@/context/auth-context2'
 // import { AuthContext, AuthProvider, useAuth } from '@/context/auth-context'
 
+import { ThemeProvider, useTheme } from '@/context/theme-context'
+import { getThemeServerFn } from '@/lib/theme'
+
+
+
 
 // ADDED
 // export interface RouterContext {
@@ -76,10 +81,13 @@ export const Route = createRootRoute({
     )
   },
   notFoundComponent: () => <NotFound />,
-  component: RootComponent,
+  loader: () => getThemeServerFn(),
+  component: RootComponent
 })
 
 function RootComponent() {
+  const data = Route.useLoaderData();
+
   // const data = Route.useLoaderData();
   // const [isClient, setIsClient] = React.useState(false);
   // console.log("isClient", isClient);
@@ -91,20 +99,24 @@ function RootComponent() {
 
   return (
     <AuthProvider>
-      <RootDocument>
-        <Outlet />
-      </RootDocument>
+      <ThemeProvider theme={data}>
+        <RootDocument>
+          <Outlet />
+        </RootDocument>
+      </ThemeProvider>
     </AuthProvider>
   )
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const { theme } = useTheme()
+  console.log('theme', theme)
   return (
-    <html>
+    <html className={theme} suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="font-regular antialiased tracking-wide">
         <div className="p-2 flex gap-2 text-lg">
           <h1>Root</h1>
         </div>
